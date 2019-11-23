@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Form, Button, Segment, Header, Message, Icon, Container } from 'semantic-ui-react';
 import firebase from '../../firebase'
-import md5 from 'md5' ;
+import md5 from 'md5';
 class Register extends React.Component {
     state = {
         errors: [],
@@ -63,7 +63,7 @@ class Register extends React.Component {
         event.preventDefault();
 
         if (this.isFormValid()) {
-            this.setState(({ errors: [], loading : true}));
+            this.setState(({ errors: [], loading: true }));
             firebase
                 .auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password)
@@ -72,26 +72,25 @@ class Register extends React.Component {
                     createdUser.user.updateProfile({
                         displayName: this.state.username,
                         //ce sont des côtes de travers
-                        photoURL:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon` //Générer avatar à chaque nouvel utilisateur
+                        photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon` //Générer avatar à chaque nouvel utilisateur
                     })
-                    .then(()=> {
-                    this.saveUser(createdUser).then(() => {
-                        console.log('user saved');
-                    })
-                        this.setState({ loading : false});
-                        error = { message: 'Utilisateur créé avec succès' };
-                        this.setState({ errors: errors.concat(error) });
-                        //rediriger vers le login
-                        this.props.history.push("/login");
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        this.setState({ errors : errors.concat(err), loading :false});
-                    })
+                        .then(() => {
+                            this.saveUser(createdUser).then(() => {
+                                console.log('user saved');
+                            })
+                            this.setState({ loading: false });
+                            error = { message: 'Utilisateur créé avec succès' };
+                            this.setState({ errors: errors.concat(error) });
+
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            this.setState({ errors: errors.concat(err), loading: false });
+                        })
                 })
                 .catch(err => {
                     console.error(err);
-                    this.setState({errors : this.state.errors.concat(err), loading : false});
+                    this.setState({ errors: this.state.errors.concat(err), loading: false });
                 });
         }
     };
@@ -101,18 +100,18 @@ class Register extends React.Component {
         return this.state.usersRef.child(createdUser.user.uid).set({
 
             name: createdUser.user.displayName,
-            avatar :createdUser.user.photoURL
+            avatar: createdUser.user.photoURL
         })
     }
 
-handleInputError = (errors, inputName) => {
-    return errors.some(error => 
-        error.message.toLowerCase().includes(inputName)
-    )
-    ? "error"
-    : ""
+    handleInputError = (errors, inputName) => {
+        return errors.some(error =>
+            error.message.toLowerCase().includes(inputName)
+        )
+            ? "error"
+            : ""
 
-}
+    }
 
     render() {
 
@@ -134,7 +133,7 @@ handleInputError = (errors, inputName) => {
                         </Form.Input>
 
                         <Form.Input fluid name="email" icon="mail" iconPosition="left"
-                            placeholder="Email" onChange={this.handleChange}  type="email" value={email} className={this.handleInputError(errors, 'email')}>
+                            placeholder="Email" onChange={this.handleChange} type="email" value={email} className={this.handleInputError(errors, 'email')}>
 
                         </Form.Input>
 

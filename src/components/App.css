@@ -27,3 +27,8 @@ body,
     border-left : 2px solid green;
     padding-left: 8px;
 }
+
+.hidePopup {
+    display: none !important;
+    margin-left: 5555555555555px;
+}

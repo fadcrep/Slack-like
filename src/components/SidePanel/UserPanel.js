@@ -38,12 +38,12 @@ class UserPanel extends React.Component {
         const { user } = this.state;
 
         return (
-            <Grid style={{ background: '#4c3c4C' }}>
+            <Grid style={{ background: '#303F9F' }}>
                 <Grid.Column>
                     <Grid.Row style={{ padding: '1.2em', margin: 0 }}>
                         {/*  App header */}
                         <Header inverted floated="left" as="h3">
-                            <Icon name="code" />
+                            <Icon name="wechat" />
                             <Header.Content>EstiamChat</Header.Content>
                         </Header>
                     </Grid.Row>

@@ -1,9 +1,11 @@
 import React from 'react';
-import { Segment, Comment, MessageHeader } from 'semantic-ui-react';
+import { Segment, Comment, MessageHeader, Grid, Button } from 'semantic-ui-react';
 import firebase from '../../firebase';
 import MessageForm from './MessageForm';
 import MessagesHeader from './MessagesHeader';
 import Message from './Message';
+import { connect } from 'react-redux';
+import { setMessageList } from '../../actions';
 
 
 
@@ -35,6 +37,7 @@ class Messages extends React.Component {
         this.state.messagesRef.child(channelId).on('child_added', snap => {
             loadedMessages.push(snap.val());
             console.log(loadedMessages);
+            this.props.setMessageList(loadedMessages)
             this.setState({
                 messages: loadedMessages,
                 messagesLoading: false
@@ -43,13 +46,56 @@ class Messages extends React.Component {
     };
 
 
-    displayMessages = messages => (
+    handleRemove = (message, user, channel) => {
+
+        console.log(message.timestamp + " time");
+        console.log((message.user.id === user.id));
+        console.log(firebase.database().ref(+ message.timestamp));
+        //console.log(channel.id);
+        //firebase.database().ref('messages/' + '-LuhLP7SZBBS61Tv9YqZ/' + '-LuhLR0kgn4QX9NZI2uT').remove();
+
+        if (message.user.id === user.id) {
+
+            /*   this.state.messagesRef.child(channel.id).on('child_removed', snap => {
+               messages.pop(snap.val());
+               console.log(messages);
+               this.setState({
+               messages: messages,
+               messagesLoading: false  
+               
+           });  
+       } 
+       ); */
+
+            //this.state.messagesRef.ref('-Luc_nVWMKE_iUxhDjKj').remove();
+
+
+
+
+
+        }
+
+    }
+
+    displayMessages = (messages, user, channel) => (
         messages.length > 0 && messages.map(message => (
             <Message
-                key={message.timestamp}
+
                 message={message}
                 user={this.state.user}
+                channel={this.state.channel}
+
             />
+            /*  <Grid>
+                 
+                  <Grid.Column >
+                      <Button onClick={ (event) => this.handleRemove(message,user , channel)}>Supprimer</Button>
+                  </Grid.Column>
+              </Grid> */
+
+
+
+
         )
         )
     )
@@ -63,10 +109,9 @@ class Messages extends React.Component {
         const { messagesRef, messages, channel, user } = this.state
         return (
             <React.Fragment>
-                <MessagesHeader />
                 <Segment>
                     <Comment.Group className="messages">
-                        {this.displayMessages(messages)}
+                        {this.displayMessages(messages, user)}
                     </Comment.Group>
                 </Segment>
 
@@ -81,4 +126,7 @@ class Messages extends React.Component {
 }
 
 
-export default Messages;
+export default connect(
+    null,
+    { setMessageList }
+)(Messages);

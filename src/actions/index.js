@@ -24,3 +24,12 @@ export const setCurrentChannel = channel => {
         }
     }
 }
+
+export const setMessageList = messages => {
+    return {
+        type: actionTypes.SET_MESSAGE_LIST,
+        payload: {
+            messages: messages
+        }
+    }
+}

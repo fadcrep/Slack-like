@@ -10,6 +10,9 @@ class MessageForm extends React.Component {
         loading: false,
         user: this.props.currentUser,
         errors: [],
+        key: '',
+        messageRef: firebase.database().ref('messages')
+
 
     }
 
@@ -17,30 +20,80 @@ class MessageForm extends React.Component {
         this.setState({ [event.target.name]: event.target.value });
     }
 
-    createMessage = () => {
-        const message = {
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            user: {
-                id: this.state.user.uid,
-                name: this.state.user.displayName,
-                avatar: this.state.user.photoURL
+    /* createMessage = () => {
+         const { messagesRef } = this.props;
+         const key = messagesRef.push().key;
+         const copy = Object.assign({}, this.state);
+         copy['key'] = key;
+         this.setState(copy);
+         const message = {
+             id: key,
+             timestamp: firebase.database.ServerValue.TIMESTAMP,
+             user: {
+                 id: this.state.user.uid,
+                 name: this.state.user.displayName,
+                 avatar: this.state.user.photoURL
+ 
+             },
+             content: this.state.message
+         };
+         return message;
+     } 
+ 
+     sendMessage = () => {
+         const { messagesRef } = this.props;
+         const { message, channel, key } = this.state;
+ 
+         if (message) {
+             const newMessage = this.createMessage()
+             this.setState({ loading: true });
+             messagesRef
+                 .child(channel.id)
+                 .push()
+                 .set(newMessage)
+                 .then(() => {
+                     this.setState({ loading: false, message: '', errors: [] })
+                 })
+                 .catch(err => {
+                     console.error(err);
+                     this.setState({
+                         loading: false,
+                         errors: this.state.errors.concat(err)
+ 
+                     })
+                 })
+         } else {
+             this.setState({
+                 errors: this.state.errors.concat({ message: 'Ecrivez un message' })
+             })
+         }
+ 
+     } */
 
-            },
-            content: this.state.message
-        };
-        return message;
-    }
 
-    sendMessage = () => {
-        const { messagesRef } = this.props;
-        const { message, channel } = this.state;
-
+    addMessage = () => {
+        const { messageRef, channel, message, user } = this.state;
+        const key = messageRef.push().key;
         if (message) {
-            this.setState({ loading: true });
-            messagesRef
+            const newMessage = {
+                id: key,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                user: {
+                    id: user.uid,
+                    name: user.displayName,
+                    avatar: user.photoURL
+
+                },
+                content: message
+
+
+            };
+
+
+            messageRef
                 .child(channel.id)
-                .push()
-                .set(this.createMessage())
+                .child(key)
+                .update(newMessage)
                 .then(() => {
                     this.setState({ loading: false, message: '', errors: [] })
                 })
@@ -52,11 +105,16 @@ class MessageForm extends React.Component {
 
                     })
                 })
+
+
+
         } else {
             this.setState({
                 errors: this.state.errors.concat({ message: 'Ecrivez un message' })
             })
         }
+
+
 
     }
 
@@ -74,11 +132,11 @@ class MessageForm extends React.Component {
                     onChange={this.handleChange}
                     placeholder="répondre ici"
                     style={{ marginBottom: '0.7em' }}
-                    label={< Button icon={'add'} />}
+
                     className={
                         errors.some(error => error.message.includes('message')) ? 'error' : ''
                     }
-                    icon={<Icon name='send' inverted circular link onClick={this.sendMessage} />}
+                    icon={<Icon name='send' inverted circular link onClick={this.addMessage} />}
 
                 />
                 {/** 

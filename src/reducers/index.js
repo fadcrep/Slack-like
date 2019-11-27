@@ -40,6 +40,23 @@ const channel_reducer = (state = initialChannelState, action) => {
 
 }
 
+
+const initialMessageListState = {
+    messages: []
+}
+
+const message_list_reducer = (state = initialMessageListState, action) => {
+    switch (action.type) {
+        case actionTypes.SET_MESSAGE_LIST:
+            return {
+                ...state,
+                messages: action.payload.messages
+            }
+        default:
+            return state;
+    }
+}
+
 const rootReducer = combineReducers({
     user: user_reducer,
     channel: channel_reducer
